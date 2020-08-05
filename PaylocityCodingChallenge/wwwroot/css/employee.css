@@ -1,0 +1,141 @@
+﻿.employees-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+.employee-card-header {
+    margin-bottom: 20px;
+}
+
+.dependents-card-header {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.employee-card-header, .dependents-card-header {
+    font-size: 20px;
+}
+
+.add-employee {
+    margin-left: 10px;
+}
+
+.employees-container {
+    display: grid;
+    grid-template-columns: 480px;
+    grid-gap: 20px;
+    margin-bottom: 20px
+}
+
+.employee {
+    display: flex;
+    position: relative;
+    padding: 10px;
+    background-color: #f3f3f3;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.employee .remove-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.employee .dependent {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+
+.employee-info {
+    width: 100%;
+}
+
+.employee-cost, .dependent-cost {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.employee-cost-total {
+    padding-top: 10px;
+    border-top: 1px solid black;
+}
+
+/*icon buttons*/
+.icon-btn {
+    background-color: DodgerBlue;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    background-color: RoyalBlue;
+}
+
+.icon-btn.icon-btn-danger {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.icon-btn.icon-btn-danger:hover {
+    color: #fff;
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.cost-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.cost-tooltip .tooltip-text {
+    visibility: hidden;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+}
+
+.cost-tooltip:hover .tooltip-text {
+    visibility: visible;
+}
+
+.cost-tooltip .cost-description
+{
+    white-space: nowrap;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.cost-tooltip .cost-table-value {
+    text-align: right;
+}
+
+.cost-tooltip tr.last
+{
+    border-top: 1px solid black;
+    font-weight: bold;
+}
+
+.cost-tooltip tr:nth-child(even):not(.last) {
+    background-color: #e8e8e8;
+}
+
+.cost-tooltip .currency-symbol {
+    text-align: right;
+}
+
+.cost-tooltip .cost-table-value.negative {
+    color: red;
+}

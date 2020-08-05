@@ -1,0 +1,79 @@
+﻿@page "/employee"
+
+<div class="employees-header">
+    <div>Employees</div>
+    <button class="add-employee icon-btn" @onclick="AddEmployee"><i class="fa fa-plus"></i></button>
+</div>
+
+
+<div class="employees-container">
+    @foreach (var employee in _employees)
+    {
+    <div class="employee">
+        <div class="employee-info">
+            <div class="employee-card-header">
+                Employee
+            </div>
+            <div>
+                <b>Name: </b><input placeholder="Name" @bind="employee.Name" />
+            </div>
+            <div class="employee-cost">
+                <b>Cost: </b><CostTooltip CalculatorResult="@_employeeCalculator.Calculate(employee)" EmployeeOnly="true"></CostTooltip>
+            </div>
+
+            <div class="dependents-card-header">
+                Dependents <button class="icon-btn" @onclick="employee.AddDependent"><i class="fa fa-plus"></i></button>
+            </div>
+            @foreach (var dependent in employee.Dependents)
+            {
+                <div class="dependent">
+                    <div>
+                        <b>Name: </b><input placeholder="Name" @bind="dependent.Name" /> <button class="icon-btn icon-btn-danger" @onclick="() => { employee.Dependents.Remove(dependent); }"><i class="fa fa-close"></i></button>
+                    </div>
+                    <div class="dependent-cost">
+                        <b>Cost: </b><CostTooltip CalculatorResult="@_dependentCalculator.Calculate(dependent)"></CostTooltip>
+                    </div>
+                </div>
+            }
+
+        <div class="employee-cost-total">
+            <b>Total Cost: </b><CostTooltip CalculatorResult="@_employeeCalculator.Calculate(employee)"></CostTooltip>
+        </div>
+        </div>
+        <div class="remove-button">
+            <button class="icon-btn icon-btn-danger" @onclick="() => { _employees.Remove(employee); }"><i class="fa fa-close"></i></button>
+        </div>
+    </div>
+    }
+</div>
+
+<div>
+    Total Cost: <CostTooltip CalculatorResult="@_employeeCalculator.Calculate(_employees)"></CostTooltip>
+</div>
+
+
+
+@code {
+    private static Code.Calculator<Models.DependentModel> _dependentCalculator = new Code.Calculator<Models.DependentModel>(
+        new List<Code.ICalculatorRule<Models.DependentModel>>()
+        {
+            new Code.DependentRule(500, .1m)
+        });
+
+    private static Code.Calculator<Models.EmployeeModel> _employeeCalculator = new Code.Calculator<Models.EmployeeModel>(
+        new List<Code.ICalculatorRule<Models.EmployeeModel>>()
+        {
+                new Code.EmployeeRule(1000, .1m, _dependentCalculator)
+        });
+
+
+    private static List<Models.EmployeeModel> _employees = new List<Models.EmployeeModel>()
+    {
+        new Models.EmployeeModel()
+    };
+
+    private static void AddEmployee()
+    {
+        _employees.Add(new Models.EmployeeModel());
+    }
+}

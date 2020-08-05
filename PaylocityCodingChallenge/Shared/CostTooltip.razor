@@ -1,0 +1,121 @@
+﻿<span>@_getTotalCost()</span> <div class="cost-tooltip">
+    <sup><i class="fa fa-info-circle"></i></sup>
+    <div class="tooltip-text">
+        <table>
+            <tbody>
+                @foreach (var ruleResult in _getAllResults())
+                {
+                    <tr>
+                        <td>
+                            <div class="cost-description">@_getDescription(ruleResult)</div>
+                        </td>
+                        <td>
+                            <div class="currency-symbol">$</div>
+                        </td>
+                        <td>
+                            <div class="cost-table-value @_getValueClass(ruleResult)">
+                                @_getValueString(ruleResult)
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+                <tr class="last">
+                    <td>
+                        <div class="cost-description">Total Cost</div>
+                    </td>
+                    <td>
+                        <div class="currency-symbol">$</div>
+                    </td>
+                    <td>
+                        @CalculatorResult.Total.ToString("N")
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Code.CalculatorResult CalculatorResult { get; set; }
+
+    [Parameter]
+    public bool EmployeeOnly { get; set; } = false;
+
+    private Code.CalculatorResultUtility _calculatorResultUtility = new Code.CalculatorResultUtility();
+
+    private List<Code.RuleResult> _getAllResults()
+    {
+        return _calculatorResultUtility.GetAllResults(this.CalculatorResult, EmployeeOnly);
+    }
+
+    private string _getTotalCost()
+    {
+        if(EmployeeOnly)
+        {
+            decimal cost = 0;
+            foreach (Code.RuleResult ruleResult in _getAllResults())
+            {
+                switch (ruleResult.CostCode)
+                {
+                    case Code.CostCodeEnum.EmployeeBaseCost:
+                        cost = ruleResult.Value;
+                        break;
+                    case Code.CostCodeEnum.EmployeeFirstLetterADiscount:
+                        cost -= ruleResult.Value;
+                        break;
+                }
+            }
+
+            return cost.ToString("N");
+        }
+
+        return CalculatorResult.Total.ToString("N");
+    }
+
+    private string _getDescription(Code.RuleResult ruleResult)
+    {
+        switch (ruleResult.CostCode)
+        {
+            case Code.CostCodeEnum.DependentBaseCost:
+                return "Dependent Base Cost";
+            case Code.CostCodeEnum.DependentFirstLetterADiscount:
+                return "Dependent First Letter A Discount";
+            case Code.CostCodeEnum.EmployeeBaseCost:
+                return "Employee Base Cost";
+            case Code.CostCodeEnum.EmployeeFirstLetterADiscount:
+                return "Employee First Letter A Discount";
+        }
+
+        return "Unknown";
+    }
+
+    private string _getValueString(Code.RuleResult ruleResult)
+    {
+        switch (ruleResult.CostCode)
+        {
+            default:
+            case Code.CostCodeEnum.DependentBaseCost:
+            case Code.CostCodeEnum.EmployeeBaseCost:
+                return ruleResult.Value.ToString("N");
+            case Code.CostCodeEnum.DependentFirstLetterADiscount:
+            case Code.CostCodeEnum.EmployeeFirstLetterADiscount:
+                return $"-{ruleResult.Value.ToString("N")}";
+        }
+    }
+
+    private string _getValueClass(Code.RuleResult ruleResult)
+    {
+        switch (ruleResult.CostCode)
+        {
+            default:
+            case Code.CostCodeEnum.DependentBaseCost:
+            case Code.CostCodeEnum.EmployeeBaseCost:
+                return null;
+            case Code.CostCodeEnum.DependentFirstLetterADiscount:
+            case Code.CostCodeEnum.EmployeeFirstLetterADiscount:
+                return "negative";
+        }
+    }
+}
